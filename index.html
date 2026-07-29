@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruta 80 - Premium v1.1.0</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#10b981">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1611/1611210.png">
+
+    <style>
+        :root { 
+            --primary: #1e293b; 
+            --accent: #10b981;  
+            --accent-hover: #059669;
+            --orange: #f97316;
+            --orange-hover: #ea580c;
+            --bg: #f8fafc; 
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --subtext: #64748b;
+            --border: #e2e8f0;
+            --soft-blue: #3b82f6;
+            --danger: #ef4444;
+            --warning-bg: #fff7ed;
+        }
+
+        [data-theme="dark"] {
+            --primary: #0f172a;
+            --accent: #10b981;
+            --accent-hover: #34d399;
+            --orange: #fb923c;
+            --orange-hover: #f97316;
+            --bg: #0b0f19;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --subtext: #94a3b8;
+            --border: #334155;
+            --soft-blue: #60a5fa;
+            --danger: #f87171;
+            --warning-bg: #291e1a;
+        }
+
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            background: var(--bg); 
+            margin: 0; 
+            color: var(--text); 
+            padding-bottom: 70px; 
+            transition: background 0.3s, color 0.3s;
+        }
+        
+        header { 
+            background: linear-gradient(135deg, var(--primary), #1e293b); 
+            color: white; 
+            padding: 30px 20px 25px; 
+            border-radius: 0 0 28px 28px; 
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            position: relative;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .theme-toggle-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: 0.2s;
+        }
+        
+        .theme-toggle-btn:hover { background: rgba(255,255,255,0.25); }
+
+        .header-icon {
+            font-size: 3rem;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+
+        .tabs { 
+            display: flex; 
+            justify-content: space-around; 
+            background: var(--card-bg); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-bottom: 1px solid var(--border);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .tab-btn { 
+            flex: 1;
+            border: none; 
+            background: none; 
+            font-weight: 700; 
+            color: var(--subtext); 
+            padding: 14px 2px; 
+            cursor: pointer; 
+            font-size: 0.75rem;
+            transition: 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .tab-btn.active { 
+            color: var(--accent); 
+            border-bottom: 3px solid var(--accent); 
+        }
+
+        .main-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container { padding: 16px; display: none; animation: fadeIn 0.3s ease-out; }
+        .container.active { display: block; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { 
+            background: var(--card-bg); 
+            border-radius: 20px; 
+            padding: 20px; 
+            margin-bottom: 16px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid var(--border);
+        }
+        
+        h2 { 
+            margin-top: 0; 
+            font-size: 1.15rem; 
+            color: var(--accent); 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            gap: 10px; 
+        }
+
+        .badge-orange {
+            background: var(--orange);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .btn { 
+            width: 100%; 
+            border: none; 
+            padding: 14px; 
+            border-radius: 14px; 
+            color: white; 
+            font-weight: 700; 
+            font-size: 0.95rem; 
+            margin-top: 10px; 
+            cursor: pointer; 
+            transition: 0.2s;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn:active { transform: scale(0.97); }
+        .btn-water { background: var(--soft-blue); }
+        .btn-snack { background: var(--orange); }
+        .btn-snack:hover { background: var(--orange-hover); }
+        .btn-accent { background: var(--accent); }
+        .btn-accent:hover { background: var(--accent-hover); }
+        .btn-danger { background: var(--danger); }
+        .btn-outline { background: transparent; border: 2px solid var(--accent); color: var(--accent); box-shadow: none; }
+        .btn-outline-orange { background: transparent; border: 2px solid var(--orange); color: var(--orange); box-shadow: none; }
+
+        .item { 
+            padding: 12px 14px; 
+            background: var(--bg); 
+            border-radius: 12px;
+            margin-bottom: 8px; 
+            display: flex; 
+            align-items: center;
+            justify-content: space-between;
+            border-left: 4px solid var(--accent);
+            transition: 0.2s;
+        }
+
+        .item.orange-border { border-left-color: var(--orange); }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .checkbox-container input {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .checkbox-container.done span {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .progress-container { background: var(--bg); border-radius: 20px; height: 12px; margin: 12px 0; overflow: hidden; border: 1px solid var(--border); }
+        .progress-bar { background: linear-gradient(90deg, var(--soft-blue), var(--accent)); height: 100%; width: 0%; transition: 0.5s ease-in-out; }
+
+        .weight-track { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: var(--bg); 
+            padding: 15px; 
+            border-radius: 14px; 
+            border: 1px dashed var(--border); 
+        }
+        .weight-value { font-size: 1.4rem; font-weight: 800; color: var(--text); }
+
+        .weight-input-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .weight-input-group input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .mood-selector { display: flex; justify-content: space-around; margin-top: 15px; }
+        .mood-btn { font-size: 2.2rem; filter: grayscale(100%) opacity(0.4); cursor: pointer; transition: 0.3s; background: none; border: none; }
+        .mood-btn.active { filter: grayscale(0%) opacity(1); transform: scale(1.25); }
+
+        .alert-banner { 
+            background: var(--warning-bg); 
+            border-radius: 12px; 
+            padding: 14px; 
+            margin-top: 12px; 
+            border-left: 5px solid var(--orange); 
+            display: none; 
+            font-size: 0.85rem; 
+            color: var(--text);
+        }
+
+        /* Timer UI */
+        .timer-display {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            color: var(--orange);
+            font-family: monospace;
+            margin: 10px 0;
+        }
+
+        .history-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--subtext);
+            margin-top: 15px;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <span style="font-size:0.8rem; opacity:0.8; font-weight:600;">RUTA 80 · v1.1.0</span>
+        <button class="theme-toggle-btn" id="themeBtn" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
+    </div>
+    <div class="header-icon">🥗</div>
+    <h1 style="margin:0; letter-spacing: 1px; font-size: 1.7rem;">RUTA 80</h1>
+    <p style="opacity: 0.9; font-weight: 300; margin-top: 4px; font-size: 0.9rem;">Salud, Nutrición & Ergonomía para el Conductor</p>
+</header>
+
+<div class="tabs">
+    <button class="tab-btn active" onclick="openTab('hoy')">RESUMEN</button>
+    <button class="tab-btn" onclick="openTab('dieta')">DIETÉTICA</button>
+    <button class="tab-btn" onclick="openTab('entreno')">FITNESS</button>
+    <button class="tab-btn" onclick="openTab('espalda')">ESPALDA</button>
+    <button class="tab-btn" onclick="openTab('datos')">HISTORIAL</button>
+</div>
+
+<div class="main-wrapper">
+
+    <!-- TAB 1: RESUMEN / HOY -->
+    <div id="hoy" class="container active">
+        <div class="card">
+            <h2>📉 Control de Peso <span class="badge-orange">Meta: 80kg</span></h2>
+            <div class="weight-track">
+                <div>Actual: <span class="weight-value" id="currentWeightDisplay">87.0</span> kg</div>
+                <div style="text-align:right">Pendiente: <span class="weight-value" style="color:var(--orange)" id="remainingWeightDisplay">7.0</span> kg</div>
+            </div>
+            
+            <div class="weight-input-group">
+                <input type="number" step="0.1" id="weightInput" placeholder="Registrar pesaje (kg)...">
+                <button class="btn btn-accent" style="width: auto; margin:0;" onclick="saveWeight()">Guardar</button>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--subtext); margin-top: 8px; text-align: center;">Objetivo semanal: -0.5 kg de forma saludable 🍏</p>
+        </div>
+
+        <div class="card">
+            <h2>💧 Hidratación Diaria</h2>
+            <div class="progress-container"><div id="wBar" class="progress-bar"></div></div>
+            <div style="display:flex; justify-content:space-between; font-size: 0.9rem;">
+                <span>Progreso: <strong id="wCount">0</strong> / 8 vasos</span>
+                <span id="waterMl" style="color:var(--subtext)">0 mL</span>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <button class="btn btn-water" onclick="addW()">+ 1 Vaso (250ml)</button>
+                <button class="btn btn-outline" style="width:70px;" onclick="resetW()" title="Reiniciar agua">🔄</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🍏 Semáforo de Saciedad</h2>
+            <p id="snackTime" style="font-weight: 600; color: var(--text); margin:5px 0;">Último snack: Ninguno</p>
+            <div id="snackWarning" class="alert-banner">
+                ⚠️ <strong>Ansiedad al volante:</strong> Bebe un vaso de agua grande. Si tras 10 min persiste el hambre, opta por frutos secos o una manzana.
+            </div>
+            <button class="btn btn-snack" id="snackBtn" onclick="logS()">Registrar Snack Saludable</button>
+        </div>
+
+        <div class="card">
+            <h2>📋 Tareas Completadas Hoy</h2>
+            <div class="progress-container"><div id="taskBar" class="progress-bar" style="background:var(--accent)"></div></div>
+            <p style="font-size:0.85rem; color:var(--subtext); text-align:center;" id="taskSummaryText">0 de 0 completadas</p>
+        </div>
+    </div>
+
+    <!-- TAB 2: DIETÉTICA -->
+    <div id="dieta" class="container">
+        <div class="card">
+            <h2 id="dia-titulo-dieta">🍴 Menú de Hoy</h2>
+            <p style="font-size: 0.8rem; color: var(--accent); margin-bottom: 15px; font-weight: bold;">PLAN: Sin Gluten · Sin Cerdo · Antiinflamatorio</p>
+            <div id="menu-contenido"></div>
+        </div>
+        
+        <div class="card" style="border-left: 4px solid var(--orange);">
+            <h2 style="color:var(--orange)">💡 Consejos de Conducción</h2>
+            <ul style="font-size: 0.85rem; color: var(--subtext); padding-left: 20px; line-height: 1.5;">
+                <li>Evita carbohidratos pesados al almuerzo para prevenir la somnolencia postprandial (marea alcalina).</li>
+                <li>Lleva siempre frutos secos al natural en la cabina para evitar paradas en bollería industrial.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- TAB 3: FITNESS -->
+    <div id="entreno" class="container">
+        <div class="card">
+            <h2 id="dia-titulo-entreno">💪 Entrenamiento Eficiente</h2>
+            <p style="font-size: 0.8rem; margin-bottom: 15px; color: var(--subtext);">Fuerza funcional en 20 minutos adaptada a conductores.</p>
+            <div id="ejercicio-contenido"></div>
+        </div>
+
+        <div class="card">
+            <h2>⏱️ Temporizador de Parada (3 min)</h2>
+            <p style="font-size: 0.85rem; color:var(--subtext);">Usa tus descansos para realizar estiramientos activos.</p>
+            <div class="timer-display" id="timerDisplay">03:00</div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-accent" id="startTimerBtn" onclick="toggleTimer()">Iniciar Estiramiento</button>
+                <button class="btn btn-outline-orange" style="width: 100px;" onclick="resetTimer()">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: ESPALDA -->
+    <div id="espalda" class="container">
+        <div class="card">
+            <h2>📊 Monitor de Salud Lumbar</h2>
+            <p style="text-align: center; font-size: 0.9rem;">¿Cómo sientes la espalda al finalizar el turno?</p>
+            <div class="mood-selector">
+                <button class="mood-btn" id="m1" onclick="setMood(1)">😞</button>
+                <button class="mood-btn" id="m2" onclick="setMood(2)">😐</button>
+                <button class="mood-btn" id="m3" onclick="setMood(3)">🙂</button>
+            </div>
+            <p id="mood-desc" style="text-align:center; margin-top:15px; font-weight:bold; color: var(--accent); min-height: 1.2em; font-size:0.9rem;"></p>
+        </div>
+
+        <div class="card">
+            <h2>🚌 Ergonomía del Asiento</h2>
+            <p style="font-size: 0.85rem; color:var(--subtext);">Ajustes clave antes de arrancar:</p>
+            <button class="btn btn-outline" onclick="alert('POSTURA CORRECTA:\n1. Respaldo a 90°-100°.\n2. Rodillas ligeramente por debajo de las caderas.\n3. Hombros apoyados sin tensión en los brazos.')">VER CHECKLIST POSTURAL</button>
+            <button class="btn btn-danger" onclick="alert('ALIVIO LUMBAR INMEDIATO:\nEn parada de semáforo o estación, apoya ambas manos en los riñones y arquea suavemente el tronco hacia atrás durante 10 segundos.')">🚨 BOTÓN S.O.S. LUMBAR</button>
+        </div>
+    </div>
+
+    <!-- TAB 5: HISTORIAL Y CONFIGURACIÓN -->
+    <div id="datos" class="container">
+        <div class="card">
+            <h2>📜 Historial de Pesajes</h2>
+            <ul class="history-list" id="weightHistoryList">
+                <li style="color:var(--subtext); font-size:0.85rem;">No hay registros de peso guardados.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>💾 Copia de Seguridad & Datos</h2>
+            <p style="font-size:0.85rem; color:var(--subtext);">Guarda tus datos o trasládalos a otro dispositivo.</p>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <button class="btn btn-accent" onclick="exportData()">📥 Exportar Copia de Seguridad (JSON)</button>
+                <button class="btn btn-outline-orange" onclick="triggerImport()">📤 Importar Copia de Seguridad</button>
+                <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+                <button class="btn btn-danger" style="margin-top:15px;" onclick="resetAllData()">🗑️ Borrar Todos los Datos</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Ruta 80 Premium v1.1.0 · Diseñado para el bienestar al volante
+    </footer>
+</div>
+
+<script>
+    if ('serviceWorker' in navigator) { 
+        navigator.serviceWorker.register('sw.js').catch(()=>{}); 
+    }
+
+    // Estructura de Datos Centralizada con LocalStorage
+    let data = JSON.parse(localStorage.getItem('ruta80Data')) || { 
+        theme: 'light',
+        currentWeight: 87.0,
+        targetWeight: 80.0,
+        weightHistory: [],
+        water: 0, 
+        lastSnackTime: null, 
+        lastUpdate: new Date().toDateString(), 
+        mood: 0,
+        completedTasks: {} 
+    };
+
+    // Reinicio de hábitos diarios pero conservando historial de peso y configuraciones
+    if (data.lastUpdate !== new Date().toDateString()) {
+        data.water = 0; 
+        data.mood = 0; 
+        data.completedTasks = {};
+        data.lastUpdate = new Date().toDateString();
+    }
+
+    const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    const hoyIdx = new Date().getDay();
+    const nombreDia = dias[hoyIdx];
+
+    const planes = {
+        dieta: {
+            "Lunes": ["Tortilla de espinacas y cúrcuma", "Manzana y almendras", "Pechuga de pollo con brócoli al vapor", "Filete de merluza con ensalada verde"],
+            "Martes": ["Avena con nueces (Sin Gluten)", "Pera conferencia", "Ternera a la plancha con verduras", "Ensalada de atún con huevo cocido"],
+            "Miércoles": ["Huevos revueltos con champiñones", "Un puñado de almendras crudas", "Lentejas vegetales sin embutido", "Pechuga de pavo a la plancha"],
+            "Jueves": ["Tostadas de arroz con aguacate", "Plátano", "Salmón a la plancha con espárragos", "Caldo vegetal con pollo desmenuzado"],
+            "Viernes": ["Tortilla francesa con queso tierno", "Manzana verde", "Pollo asado con ensalada mixta", "Pescado blanco al horno"],
+            "Sábado": ["Yogur natural con semillas de chía", "Nueces", "Paella ligera de marisco", "Ensalada completa de atún"],
+            "Domingo": ["Huevos escalfados con tomate", "Fruta variada de temporada", "Pollo a la plancha con pimientos", "Cena ligera de cremas vegetales"]
+        },
+        entreno: {
+            "Lunes": ["🐱 Gato-Camello (10 repeticiones)", "🌉 Puente de Glúteo (12 repeticiones)", "🪑 Sentadillas guiadas (12 repeticiones)", "🧱 Flexiones en pared (12 repeticiones)"],
+            "Martes": ["🧘 Estiramiento Lumbar pasivo", "🚶 Caminata rápida (15-20 min)", "🔄 Movilidad articular de cuello"],
+            "Miércoles": ["🐱 Gato-Camello (10 repeticiones)", "🌉 Puente de Glúteo (15 repeticiones)", "🪑 Sentadillas guiadas (15 repeticiones)", "⏱️ Plancha abdominal (30 seg)"],
+            "Jueves": ["🧘 Estiramiento Isquiotibiales", "🚶 Caminata activa en descansos", "🔄 Movilidad de hombros y escápulas"],
+            "Viernes": ["🐱 Gato-Camello (10 repeticiones)", "🌉 Puente de Glúteo (12 repeticiones)", "🪑 Sentadillas guiadas (12 repeticiones)", "🧱 Flexiones en pared (12 repeticiones)"],
+            "Sábado": ["🚶 Paseo activo continuo (30 min)", "🧘 Estiramientos completos"],
+            "Domingo": ["🛌 Descanso Total", "🧘 Descompresión lumbar suave"]
+        }
+    };
+
+    function saveData() {
+        localStorage.setItem('ruta80Data', JSON.stringify(data));
+        updateUI();
+    }
+
+    function toggleTheme() {
+        data.theme = data.theme === 'dark' ? 'light' : 'dark';
+        applyTheme();
+        saveData();
+    }
+
+    function applyTheme() {
+        if(data.theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('themeBtn').innerText = '☀️';
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+            document.getElementById('themeBtn').innerText = '🌙';
+        }
+    }
+
+    function updateUI() {
+        // Peso
+        const currentW = data.currentWeight || 87.0;
+        const targetW = data.targetWeight || 80.0;
+        document.getElementById('currentWeightDisplay').innerText = currentW.toFixed(1);
+        const remaining = (currentW - targetW).toFixed(1);
+        document.getElementById('remainingWeightDisplay').innerText = remaining > 0 ? remaining : '0.0';
+
+        // Agua
+        document.getElementById('wCount').innerText = data.water;
+        document.getElementById('waterMl').innerText = (data.water * 250) + ' mL';
+        document.getElementById('wBar').style.width = Math.min((data.water / 8 * 100), 100) + '%';
+        
+        // Snack
+        const snackMsg = data.lastSnackTime ? new Date(data.lastSnackTime).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "Ninguno";
+        document.getElementById('snackTime').innerText = "Último snack: " + snackMsg;
+
+        if (data.lastSnackTime && (Date.now() - data.lastSnackTime < 10800000)) {
+            document.getElementById('snackWarning').style.display = 'block';
+        } else {
+            document.getElementById('snackWarning').style.display = 'none';
+        }
+
+        // Estado de Espalda
+        document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+        if(data.mood > 0) {
+            document.getElementById('m' + data.mood).classList.add('active');
+            const msgs = ["", "Día exigente. ¡Prioriza el descanso y la descompresión!", "Molestias leves. Mantén los estiramientos suaves.", "¡Excelente! Tu espalda responde bien."];
+            document.getElementById('mood-desc').innerText = msgs[data.mood];
+        } else {
+            document.getElementById('mood-desc').innerText = "";
+        }
+
+        // Historial de peso render
+        renderWeightHistory();
+        updateTaskProgress();
+    }
+
+    function saveWeight() {
+        const val = parseFloat(document.getElementById('weightInput').value);
+        if(!isNaN(val) && val > 30 && val < 250) {
+            data.currentWeight = val;
+            if(!data.weightHistory) data.weightHistory = [];
+            data.weightHistory.unshift({
+                date: new Date().toLocaleDateString(),
+                weight: val
+            });
+            document.getElementById('weightInput').value = '';
+            saveData();
+            alert("✅ Pesaje registrado con éxito.");
+        } else {
+            alert("Por favor, introduce un peso válido.");
+        }
+    }
+
+    function renderWeightHistory() {
+        const list = document.getElementById('weightHistoryList');
+        if(!data.weightHistory || data.weightHistory.length === 0) {
+            list.innerHTML = `<li style="color:var(--subtext); font-size:0.85rem;">No hay registros de peso aún.</li>`;
+            return;
+        }
+        list.innerHTML = data.weightHistory.slice(0, 10).map(item => `
+            <li class="history-item">
+                <span>📅 ${item.date}</span>
+                <strong>${item.weight.toFixed(1)} kg</strong>
+            </li>
+        `).join('');
+    }
+
+    function addW() { if(data.water < 12) { data.water++; saveData(); } }
+    function resetW() { data.water = 0; saveData(); }
+    
+    function logS() { 
+        data.lastSnackTime = Date.now(); 
+        saveData(); 
+        alert("Snack registrado. ¡Prioriza agua y alimentos antiinflamatorios!");
+    }
+
+    function setMood(m) { data.mood = m; saveData(); }
+
+    function openTab(tabName) {
+        document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+        document.getElementById(tabName).classList.add('active');
+        
+        const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabName));
+        if(btn) btn.classList.add('active');
+        window.scrollTo(0,0);
+    }
+
+    function toggleTask(taskId) {
+        data.completedTasks[taskId] = !data.completedTasks[taskId];
+        saveData();
+    }
+
+    function updateTaskProgress() {
+        const totalDieta = 4;
+        const totalEntreno = planes.entreno[nombreDia].length;
+        const total = totalDieta + totalEntreno;
+
+        let completed = 0;
+        for(let i=0; i<totalDieta; i++) {
+            if(data.completedTasks['d_' + i]) completed++;
+        }
+        for(let i=0; i<totalEntreno; i++) {
+            if(data.completedTasks['e_' + i]) completed++;
+        }
+
+        const percent = total > 0 ? (completed / total * 100) : 0;
+        document.getElementById('taskBar').style.width = percent + '%';
+        document.getElementById('taskSummaryText').innerText = `${completed} de ${total} objetivos completados hoy`;
+    }
+
+    function cargarContenidoDiario() {
+        document.getElementById('dia-titulo-dieta').innerText = "🍴 Menú: " + nombreDia;
+        document.getElementById('dia-titulo-entreno').innerText = "💪 Rutina: " + nombreDia;
+        
+        const iconSet = ["🌅 Desayuno", "🍎 Media Mañana", "☀️ Almuerzo", "🌙 Cena"];
+        
+        // Dieta con checkboxes
+        document.getElementById('menu-contenido').innerHTML = planes.dieta[nombreDia].map((item, i) => {
+            const taskId = 'd_' + i;
+            const isChecked = !!data.completedTasks[taskId];
+            return `
+            <div class="item">
+                <label class="checkbox-container ${isChecked ? 'done' : ''}">
+                    <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleTask('${taskId}')">
+                    <div style="display:flex; flex-direction:column;">
+                        <small style="color:var(--accent); font-weight:bold; font-size: 0.7rem; text-transform: uppercase;">${iconSet[i]}</small>
+                        <span style="font-weight:500;">${item}</span>
+                    </div>
+                </label>
+            </div>`;
+        }).join('');
+
+        // Entreno con checkboxes
+        document.getElementById('ejercicio-contenido').innerHTML = planes.entreno[nombreDia].map((item, i) => {
+            const taskId = 'e_' + i;
+            const isChecked = !!data.completedTasks[taskId];
+            return `
+            <div class="item orange-border">
+                <label class="checkbox-container ${isChecked ? 'done' : ''}">
+                    <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleTask('${taskId}')">
+                    <span style="font-weight:500;">${item}</span>
+                </label>
+            </div>`;
+        }).join('');
+    }
+
+    // --- TEMPORIZADOR DE PARADA ---
+    let timerInterval = null;
+    let timerSeconds = 180;
+    let timerRunning = false;
+
+    function toggleTimer() {
+        if(timerRunning) {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            document.getElementById('startTimerBtn').innerText = "Reanudar";
+        } else {
+            timerRunning = true;
+            document.getElementById('startTimerBtn').innerText = "Pausar";
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                updateTimerDisplay();
+                if(timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    timerRunning = false;
+                    alert("⏰ ¡Tiempo completado! Buen trabajo con tus estiramientos.");
+                    resetTimer();
+                }
+            }, 1000);
+        }
+    }
+
+    function resetTimer() {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        timerSeconds = 180;
+        updateTimerDisplay();
+        document.getElementById('startTimerBtn').innerText = "Iniciar Estiramiento";
+    }
+
+    function updateTimerDisplay() {
+        const m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+        const s = (timerSeconds % 60).toString().padStart(2, '0');
+        document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+    }
+
+    // --- BACKUP & EXPORT/IMPORT ---
+    function exportData() {
+        const jsonStr = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `ruta80_backup_${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function triggerImport() {
+        document.getElementById('importFile').click();
+    }
+
+    function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const imported = JSON.parse(e.target.result);
+                if (imported && typeof imported === 'object') {
+                    data = imported;
+                    saveData();
+                    applyTheme();
+                    cargarContenidoDiario();
+                    alert("✅ Copia de seguridad restaurada correctamente.");
+                }
+            } catch (err) {
+                alert("❌ El archivo seleccionado no es válido.");
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function resetAllData() {
+        if(confirm("¿Estás seguro de que deseas reiniciar todos tus registros? Esta acción no se puede deshacer.")) {
+            localStorage.removeItem('ruta80Data');
+            location.reload();
+        }
+    }
+
+    // Inicialización al cargar la página
+    applyTheme();
+    cargarContenidoDiario();
+    updateUI();
+</script>
+</body>
+</html>
