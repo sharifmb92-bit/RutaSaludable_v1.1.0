@@ -1,0 +1,15 @@
+{
+  "name": "Ruta 80 - Salud & Nutrición",
+  "short_name": "Ruta 80",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0b0f19",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1611/1611210.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
